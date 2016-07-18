@@ -31,12 +31,13 @@
     [self.remarkLabel autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:20.0];
 }
 
-- (void)bindModel:(MBHomeBeaconResponse *)model
+- (void)bindModel:(id)model
 {
-    if (!model && !model.data && model.data) {
-        _remarkLabel.text = [NSString stringWithFormat:@"查询结果remark：%@",model.data];
+    MBHomeBeaconResponse *cellData = (MBHomeBeaconResponse *)model;
+    if (!cellData && !cellData.data && cellData.data) {
+        _remarkLabel.text = [NSString stringWithFormat:@"查询结果remark：%@",cellData.data];
     }else {
-        _remarkLabel.text = [NSString stringWithFormat:@"发生错误%@", model.message];
+        _remarkLabel.text = [NSString stringWithFormat:@"发生错误%@", cellData.message];
     }
 }
 

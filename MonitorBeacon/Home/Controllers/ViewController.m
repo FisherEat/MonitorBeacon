@@ -71,18 +71,21 @@ NSString *const resultCellIndentifier = @"MBHomeResultCell";
 - (void)constructData
 {
     [self.dataArray removeAllObjects];
-    MBHomeTextFieldModel *uuidModel = [[MBHomeTextFieldModel alloc] initTextFieldModelWith:MBHomeTextFieldTypeUUID title:@"UUID:" placeHolder:@"必填，UUID" keyString:@"" valueString:@"" cellType:MBHomeCellTypeTextField];
-    [self.dataArray addObject:uuidModel];
+    MBHomeTextFieldModel *uuidModel = [[MBHomeTextFieldModel alloc] initTextFieldModelWith:MBHomeTextFieldTypeUUID title:@"UUID:" placeHolder:@"必填，UUID"  valueString:@""];
+    MBHomeBeaconCellModel *uuidCellModel = [[MBHomeBeaconCellModel alloc] initWithCellType:MBHomeCellTypeTextField model:uuidModel];
+    [self.dataArray addObject:uuidCellModel];
     
-    MBHomeTextFieldModel *majorModel = [[MBHomeTextFieldModel alloc] initTextFieldModelWith:MBHomeTextFieldTypeMajor title:@"Major:" placeHolder:@"major, 必填" keyString:@"" valueString:@"" cellType:MBHomeCellTypeTextField];
-    [self.dataArray addObject:majorModel];
     
-    MBHomeTextFieldModel *minorModel = [[MBHomeTextFieldModel alloc]initTextFieldModelWith:MBHomeTextFieldTypeMinor title:@"Minor:" placeHolder:@"Minor, 必填" keyString:@"" valueString:@"" cellType:MBHomeCellTypeTextField];
-    [self.dataArray addObject:minorModel];
+    MBHomeTextFieldModel *majorModel = [[MBHomeTextFieldModel alloc] initTextFieldModelWith:MBHomeTextFieldTypeMajor title:@"Major:" placeHolder:@"major, 必填" valueString:@""];
+    MBHomeBeaconCellModel *majorCellModel = [[MBHomeBeaconCellModel alloc] initWithCellType:MBHomeCellTypeTextField model:majorModel];
+    [self.dataArray addObject:majorCellModel];
     
-    MBHomeTextFieldModel *buttonModel = [MBHomeTextFieldModel new];
-    buttonModel.cellType = MBHomeCellTypeConfirmButton;
-    [self.dataArray addObject:buttonModel];
+    MBHomeTextFieldModel *minorModel = [[MBHomeTextFieldModel alloc]initTextFieldModelWith:MBHomeTextFieldTypeMinor title:@"Minor:" placeHolder:@"Minor, 必填" valueString:@""];
+    MBHomeBeaconCellModel *minorCellModel = [[MBHomeBeaconCellModel alloc] initWithCellType:MBHomeCellTypeTextField model:minorModel];
+    [self.dataArray addObject:minorCellModel];
+    
+    MBHomeBeaconCellModel *confirmCellModel = [[MBHomeBeaconCellModel alloc] initWithCellType:MBHomeCellTypeConfirmButton model:nil];
+    [self.dataArray addObject:confirmCellModel];
 }
 
 - (TPKeyboardAvoidingTableView *)tableView
@@ -179,12 +182,12 @@ NSString *const resultCellIndentifier = @"MBHomeResultCell";
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     UITableViewCell *cell;
-    MBHomeTextFieldModel *model = self.dataArray[indexPath.row];
-    switch (model.cellType) {
+    MBHomeBeaconCellModel *cellModel = self.dataArray[indexPath.row];
+    switch (cellModel.cellType) {
         case MBHomeCellTypeTextField:
         {
             MBHomeBeaconTextFieldCellTableViewCell *textFieldCell = [tableView dequeueReusableCellWithIdentifier:textFieldCellIdentifier forIndexPath:indexPath];
-            [textFieldCell bindModel:model];
+            [textFieldCell bindModel:cellModel.model];
             textFieldCell.delegate = self;
             cell = textFieldCell;
         }
@@ -199,7 +202,7 @@ NSString *const resultCellIndentifier = @"MBHomeResultCell";
         case MBHomeCellTypeResult:
         {
             MBHomeResultCell *resultCell = [tableView dequeueReusableCellWithIdentifier:resultCellIndentifier forIndexPath:indexPath];
-            [resultCell bindModel:model.response];
+            [resultCell bindModel:cellModel.model];
             cell = resultCell;
         }
             break;
@@ -263,15 +266,13 @@ NSString *const resultCellIndentifier = @"MBHomeResultCell";
 - (void)updateResultData:(id)response
 {
     MBHomeBeaconResponse *responseData = [MBHomeBeaconResponse mj_objectWithKeyValues:response];
-    MBHomeTextFieldModel *model = [MBHomeTextFieldModel new];
-    model.cellType = MBHomeCellTypeResult;
-    model.response = responseData;
+    MBHomeBeaconCellModel *cellModel = [[MBHomeBeaconCellModel alloc] initWithCellType:MBHomeCellTypeResult model:responseData];
     
     if (self.dataArray.count == 4) {
-        [self.dataArray addObject:model];
+        [self.dataArray addObject:cellModel];
         [self.tableView reloadData];
     }else {
-        [self.dataArray replaceObjectAtIndex:4 withObject:model];
+        [self.dataArray replaceObjectAtIndex:4 withObject:cellModel];
         [self.tableView reloadData];
     }
 }

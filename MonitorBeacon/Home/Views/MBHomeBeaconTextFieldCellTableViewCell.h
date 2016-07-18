@@ -20,5 +20,5 @@
 @property (nonatomic, strong) UILabel *titleLabel;
 @property (nonatomic, strong) MBHomeTextFieldModel *tfModel;
 @property (nonatomic, weak) id <MBHomeTextFieldDelegate>delegate;
-- (void)bindModel:(MBHomeTextFieldModel *)model;
+- (void)bindModel:(id)model;
 @end

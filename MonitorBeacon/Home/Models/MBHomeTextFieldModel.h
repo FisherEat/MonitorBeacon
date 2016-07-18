@@ -23,22 +23,24 @@ typedef NS_ENUM(NSInteger, MBHomeCellType)
     MBHomeCellTypeResult,
 };
 
+@interface MBHomeBeaconCellModel : NSObject
+@property (nonatomic, assign) MBHomeCellType cellType;
+@property (nonatomic, strong) id model;
+- (instancetype)initWithCellType:(MBHomeCellType)cellType model:(id)cellModel;
+@end
+
 @interface MBHomeTextFieldModel : NSObject
 @property (nonatomic, assign) MBHomeTextFieldType textFieldType;
-@property (nonatomic, assign) MBHomeCellType cellType;
 @property (nonatomic, strong) MBHomeBeaconResponse *response;
 
 @property (nonatomic, strong) NSString *title;
 @property (nonatomic, strong) NSString *placeHolder;
-@property (nonatomic, strong) NSString *keyString;
 @property (nonatomic, strong) NSString *valueString;
 
 - (instancetype)initTextFieldModelWith:(MBHomeTextFieldType)type
                                  title:(NSString *)title
                            placeHolder:(NSString *)placeHolder
-                             keyString:(NSString *)keyString
-                           valueString:(NSString *)valueString
-                              cellType:(MBHomeCellType)cellType;
+                           valueString:(NSString *)valueString;
 @end
 
 

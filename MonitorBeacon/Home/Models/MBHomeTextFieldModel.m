@@ -8,21 +8,30 @@
 
 #import "MBHomeTextFieldModel.h"
 
+@implementation MBHomeBeaconCellModel
+
+- (instancetype)initWithCellType:(MBHomeCellType)cellType model:(id)cellModel
+{
+    if (self = [super init]) {
+        self.cellType = cellType;
+        self.model = cellModel;
+    }
+    return self;
+}
+
+@end
+
 @implementation MBHomeTextFieldModel
 - (instancetype)initTextFieldModelWith:(MBHomeTextFieldType)type
                                  title:(NSString *)title
                            placeHolder:(NSString *)placeHolder
-                             keyString:(NSString *)keyString
                            valueString:(NSString *)valueString
-                              cellType:(MBHomeCellType)cellType
 {
     self = [super init];
     self.textFieldType = type;
     self.title = title;
-    self.keyString = keyString;
     self.valueString = valueString;
     self.placeHolder = placeHolder;
-    self.cellType = cellType;
     return self;
 }
 @end

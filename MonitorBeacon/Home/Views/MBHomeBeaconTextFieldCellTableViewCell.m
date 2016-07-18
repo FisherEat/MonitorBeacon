@@ -29,18 +29,21 @@
     [self.titleLabel setContentHuggingPriority:UILayoutPriorityDefaultHigh forAxis:UILayoutConstraintAxisHorizontal];
     
     [self.inputTextField autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:self.titleLabel withOffset:10.0];
-    [self.inputTextField autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:50.0];
+    [self.inputTextField autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:20.0];
     [self.inputTextField autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
     [self.inputTextField autoSetDimension:ALDimensionHeight toSize:40.0];
     
 }
 
-- (void)bindModel:(MBHomeTextFieldModel *)model
+- (void)bindModel:(id)model
 {
-    self.tfModel = model;
+    if (![model isKindOfClass:[MBHomeTextFieldModel class]] || !model) {
+        return;
+    }
+    self.tfModel = (MBHomeTextFieldModel *)model;
     
-    self.titleLabel.text = model.title;
-    self.inputTextField.placeholder = model.placeHolder;
+    self.titleLabel.text = self.tfModel.title;
+    self.inputTextField.placeholder = self.tfModel.placeHolder;
 }
 
 - (UILabel *)titleLabel

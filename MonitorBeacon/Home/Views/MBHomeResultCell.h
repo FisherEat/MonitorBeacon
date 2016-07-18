@@ -14,5 +14,5 @@
 @property (nonatomic, strong) UILabel *majorLabel;
 @property (nonatomic, strong) UILabel *minorLabel;
 @property (nonatomic, strong) UILabel *remarkLabel;
-- (void)bindModel:(MBHomeBeaconResponse *)model;
+- (void)bindModel:(id)model;
 @end
