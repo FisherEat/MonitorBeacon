@@ -18,6 +18,7 @@
 #import "BRAppConfig.h"
 #import "TWURLRequest.h"
 #import "MJExtension.h"
+#import "MBHomeHistoryModel.h"
 
 NSString *const textFieldCellIdentifier = @"MBHomeBeaconTextFieldCellTableViewCell";
 NSString *const confirmButtonCellIdentifier = @"MBHomeConfirmButtonCellTableViewCell.h";
@@ -25,22 +26,38 @@ NSString *const resultCellIndentifier = @"MBHomeResultCell";
 
 @interface ViewController ()<UITableViewDelegate, UITableViewDataSource, MBHomeTextFieldDelegate, MBHomeConfirmButtonCellDelegate>
 @property (nonatomic, strong) TPKeyboardAvoidingTableView *tableView;
-@property (nonatomic, strong) NSMutableArray *dataArray;
 @property (nonatomic, strong) MBHomeBeaconModel *beaconModel;
-@property (nonatomic, strong) UIButton *sendMsgBtn;
+@property (nonatomic, strong) UIButton *clearHistoryBtn;
 @property (nonatomic, strong) UIButton *clearBtn;
+
+@property (nonatomic, strong) NSMutableDictionary *dataDic;
+
 @end
 
 @implementation ViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.dataArray = [NSMutableArray array];
     self.beaconModel = [MBHomeBeaconModel new];
-    [self constructData];
+    [self initDataDic];
+    [self constructInputData];
     [self setUpViews];
 }
 
+- (void)initDataDic
+{
+    self.dataDic = [NSMutableDictionary dictionary];
+    self.dataDic[@(MBHomeSectionTypeInput)] = [NSMutableArray array];
+    self.dataDic[@(MBHomeSectionTypeResult)] = [NSMutableArray array];
+    self.dataDic[@(MBHomeSectionTypeHistory)]  = [NSMutableArray array];
+}
+
+- (void)historyData
+{
+    
+}
+
+#pragma mark - init views
 - (void)setUpViews
 {
     [self setUpTabelView];
@@ -56,36 +73,16 @@ NSString *const resultCellIndentifier = @"MBHomeResultCell";
 
 - (void)setUpButtons
 {
-    [self.view addSubview:self.sendMsgBtn];
+    [self.view addSubview:self.clearHistoryBtn];
     [self.view addSubview:self.clearBtn];
     
-    [self.sendMsgBtn autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:20.0];
-    [self.sendMsgBtn autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:20.0];
-    [self.sendMsgBtn autoSetDimensionsToSize:CGSizeMake(100, 40)];
+    [self.clearHistoryBtn autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:20.0];
+    [self.clearHistoryBtn autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:20.0];
+    [self.clearHistoryBtn autoSetDimensionsToSize:CGSizeMake(100, 40)];
     
     [self.clearBtn autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:20.0];
     [self.clearBtn autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:20.0];
     [self.clearBtn autoSetDimensionsToSize:CGSizeMake(100, 40)];
-}
-
-- (void)constructData
-{
-    [self.dataArray removeAllObjects];
-    MBHomeTextFieldModel *uuidModel = [[MBHomeTextFieldModel alloc] initTextFieldModelWith:MBHomeTextFieldTypeUUID title:@"UUID:" placeHolder:@"必填，UUID"  valueString:@""];
-    MBHomeBeaconCellModel *uuidCellModel = [[MBHomeBeaconCellModel alloc] initWithCellType:MBHomeCellTypeTextField model:uuidModel];
-    [self.dataArray addObject:uuidCellModel];
-    
-    
-    MBHomeTextFieldModel *majorModel = [[MBHomeTextFieldModel alloc] initTextFieldModelWith:MBHomeTextFieldTypeMajor title:@"Major:" placeHolder:@"major, 必填" valueString:@""];
-    MBHomeBeaconCellModel *majorCellModel = [[MBHomeBeaconCellModel alloc] initWithCellType:MBHomeCellTypeTextField model:majorModel];
-    [self.dataArray addObject:majorCellModel];
-    
-    MBHomeTextFieldModel *minorModel = [[MBHomeTextFieldModel alloc]initTextFieldModelWith:MBHomeTextFieldTypeMinor title:@"Minor:" placeHolder:@"Minor, 必填" valueString:@""];
-    MBHomeBeaconCellModel *minorCellModel = [[MBHomeBeaconCellModel alloc] initWithCellType:MBHomeCellTypeTextField model:minorModel];
-    [self.dataArray addObject:minorCellModel];
-    
-    MBHomeBeaconCellModel *confirmCellModel = [[MBHomeBeaconCellModel alloc] initWithCellType:MBHomeCellTypeConfirmButton model:nil];
-    [self.dataArray addObject:confirmCellModel];
 }
 
 - (TPKeyboardAvoidingTableView *)tableView
@@ -103,16 +100,16 @@ NSString *const resultCellIndentifier = @"MBHomeResultCell";
     return _tableView;
 }
 
-- (UIButton *)sendMsgBtn
+- (UIButton *)clearHistoryBtn
 {
-    if (!_sendMsgBtn) {
-        _sendMsgBtn = [UIButton newAutoLayoutView];
-        [_sendMsgBtn setTitle:@"清空历史" forState:UIControlStateNormal];
-        [_sendMsgBtn setTitleColor:HEXCOLOR(0x00c988) forState:UIControlStateNormal];
-        [_sendMsgBtn addTarget:self action:@selector(sendBeaconMsg) forControlEvents:UIControlEventTouchUpInside];
-        _sendMsgBtn.titleLabel.font = kFont(16);
+    if (!_clearHistoryBtn) {
+        _clearHistoryBtn = [UIButton newAutoLayoutView];
+        [_clearHistoryBtn setTitle:@"清空历史" forState:UIControlStateNormal];
+        [_clearHistoryBtn setTitleColor:HEXCOLOR(0x00c988) forState:UIControlStateNormal];
+        [_clearHistoryBtn addTarget:self action:@selector(clearHistory) forControlEvents:UIControlEventTouchUpInside];
+        _clearHistoryBtn.titleLabel.font = kFont(16);
     }
-    return _sendMsgBtn;
+    return _clearHistoryBtn;
 }
 
 - (UIButton *)clearBtn
@@ -127,16 +124,55 @@ NSString *const resultCellIndentifier = @"MBHomeResultCell";
     return _clearBtn;
 }
 
-- (void)sendBeaconMsg
+#pragma mark - construct or update dataDic
+- (void)constructInputData
 {
+    NSMutableArray *dataArray = self.dataDic[@(MBHomeSectionTypeInput)];
+    [dataArray removeAllObjects];
     
+    MBHomeTextFieldModel *uuidModel = [[MBHomeTextFieldModel alloc] initTextFieldModelWith:MBHomeTextFieldTypeUUID title:@"UUID:" placeHolder:@"必填，UUID"  valueString:@""];
+    MBHomeBeaconCellModel *uuidCellModel = [[MBHomeBeaconCellModel alloc] initWithCellType:MBHomeCellTypeTextField model:uuidModel];
+    [dataArray addObject:uuidCellModel];
+    
+    MBHomeTextFieldModel *majorModel = [[MBHomeTextFieldModel alloc] initTextFieldModelWith:MBHomeTextFieldTypeMajor title:@"Major:" placeHolder:@"major, 必填" valueString:@""];
+    MBHomeBeaconCellModel *majorCellModel = [[MBHomeBeaconCellModel alloc] initWithCellType:MBHomeCellTypeTextField model:majorModel];
+    [dataArray addObject:majorCellModel];
+    
+    MBHomeTextFieldModel *minorModel = [[MBHomeTextFieldModel alloc]initTextFieldModelWith:MBHomeTextFieldTypeMinor title:@"Minor:" placeHolder:@"Minor, 必填" valueString:@""];
+    MBHomeBeaconCellModel *minorCellModel = [[MBHomeBeaconCellModel alloc] initWithCellType:MBHomeCellTypeTextField model:minorModel];
+    [dataArray addObject:minorCellModel];
+    
+    MBHomeBeaconCellModel *confirmCellModel = [[MBHomeBeaconCellModel alloc] initWithCellType:MBHomeCellTypeConfirmButton model:nil];
+    [dataArray addObject:confirmCellModel];
+    
+    self.dataDic[@(MBHomeSectionTypeInput)] = dataArray;
+}
+
+- (void)updateResultData:(MBHomeBeaconResponse *)response
+{
+    [self constructResultData:response];
+    [self.tableView reloadData];
+}
+
+- (void)constructResultData:(MBHomeBeaconResponse *)response
+{
+    NSMutableArray *resultArray = self.dataDic[@(MBHomeSectionTypeResult)];
+    [resultArray removeAllObjects];
+    MBHomeBeaconCellModel *cellModel = [[MBHomeBeaconCellModel alloc] initWithCellType:MBHomeCellTypeResult model:response];
+    [resultArray addObject:cellModel];
+    self.dataDic[@(MBHomeSectionTypeResult)] = resultArray;
+}
+
+#pragma mark - methods deal with data
+- (void)clearHistory
+{
+    [[MBHomeHistoryModel shareHistory] clearHistory];
 }
 
 - (void)clearAllInput
 {
-    [self.dataArray removeAllObjects];
     self.beaconModel = [MBHomeBeaconModel new];
-    [self constructData];
+    [self constructInputData];
     [self.tableView reloadData];
 }
 
@@ -164,14 +200,16 @@ NSString *const resultCellIndentifier = @"MBHomeResultCell";
     return NO;
 }
 
+#pragma mark - UITabelViewDelegate & UITabelViewDataSource
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return 1;
+    return self.dataDic.count;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return self.dataArray.count;
+    NSMutableArray *rows = self.dataDic[@(section)];
+    return rows.count;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -182,7 +220,10 @@ NSString *const resultCellIndentifier = @"MBHomeResultCell";
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     UITableViewCell *cell;
-    MBHomeBeaconCellModel *cellModel = self.dataArray[indexPath.row];
+    
+    NSMutableArray *rows = self.dataDic[@(indexPath.section)];
+    
+    MBHomeBeaconCellModel *cellModel = rows[indexPath.row];
     switch (cellModel.cellType) {
         case MBHomeCellTypeTextField:
         {
@@ -248,6 +289,9 @@ NSString *const resultCellIndentifier = @"MBHomeResultCell";
     if (![self validateInputTexts]) {
         return;
     }
+    
+   [[MBHomeHistoryModel shareHistory] addHistoryInterval:self.beaconModel];
+    
     NSDictionary *params = @{@"uuid": NSSTRING_NOT_NIL(self.beaconModel.uuid),
                              @"major": NSSTRING_NOT_NIL(self.beaconModel.major),
                              @"minor": NSSTRING_NOT_NIL(self.beaconModel.minor)};
@@ -257,24 +301,11 @@ NSString *const resultCellIndentifier = @"MBHomeResultCell";
             mAlertView(@"Error", @"接口或者查询错误");
             return ;
         }
-
-        [weakSelf updateResultData:data];
+        
+        MBHomeBeaconResponse *responseData = [MBHomeBeaconResponse mj_objectWithKeyValues:data];
+        [weakSelf updateResultData:responseData];
         
     }];
-}
-
-- (void)updateResultData:(id)response
-{
-    MBHomeBeaconResponse *responseData = [MBHomeBeaconResponse mj_objectWithKeyValues:response];
-    MBHomeBeaconCellModel *cellModel = [[MBHomeBeaconCellModel alloc] initWithCellType:MBHomeCellTypeResult model:responseData];
-    
-    if (self.dataArray.count == 4) {
-        [self.dataArray addObject:cellModel];
-        [self.tableView reloadData];
-    }else {
-        [self.dataArray replaceObjectAtIndex:4 withObject:cellModel];
-        [self.tableView reloadData];
-    }
 }
 
 - (void)didReceiveMemoryWarning {

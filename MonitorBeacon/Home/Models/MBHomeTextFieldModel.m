@@ -37,9 +37,27 @@
 @end
 
 @implementation MBHomeBeaconModel
+- (void)encodeWithCoder:(NSCoder *)aCoder
+{
+    [aCoder encodeObject:self.uuid forKey:@"uuid"];
+    [aCoder encodeObject:self.major forKey:@"major"];
+    [aCoder encodeObject:self.minor forKey:@"minor"];
+}
+
+- (id)initWithCoder:(NSCoder *)aDecoder
+{
+    self.uuid = [[aDecoder decodeObjectForKey:@"uuid"] copy];
+    self.major = [[aDecoder decodeObjectForKey:@"major"] copy];
+    self.minor = [[aDecoder decodeObjectForKey:@"minor"] copy];
+    return self;
+}
 
 @end
 
 @implementation MBHomeBeaconResponse
+
+@end
+
+@implementation MBHomeBeaconSectionData
 
 @end

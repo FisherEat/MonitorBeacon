@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		6526A5F31D3C87DD00ED9DFA /* UIColor+TNExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 6526A5F21D3C87DD00ED9DFA /* UIColor+TNExtensions.m */; };
+		65C2E11F1D3DB7B400DCD86C /* MBHomeHistoryModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 65C2E11E1D3DB7B400DCD86C /* MBHomeHistoryModel.m */; };
 		9FEB8A3B4F09BF31DEA21857 /* libPods-MonitorBeacon.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C045EF01A2BA97D1B2BC0C3E /* libPods-MonitorBeacon.a */; };
 		C01C952B1D3B8D7000895A48 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = C01C952A1D3B8D7000895A48 /* main.m */; };
 		C01C952E1D3B8D7000895A48 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C01C952D1D3B8D7000895A48 /* AppDelegate.m */; };
@@ -51,6 +52,8 @@
 /* Begin PBXFileReference section */
 		6526A5F11D3C87A200ED9DFA /* UIColor+TNExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+TNExtensions.h"; sourceTree = "<group>"; };
 		6526A5F21D3C87DD00ED9DFA /* UIColor+TNExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+TNExtensions.m"; sourceTree = "<group>"; };
+		65C2E11D1D3DB7B400DCD86C /* MBHomeHistoryModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBHomeHistoryModel.h; sourceTree = "<group>"; };
+		65C2E11E1D3DB7B400DCD86C /* MBHomeHistoryModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBHomeHistoryModel.m; sourceTree = "<group>"; };
 		8B91E49F014447DC5C13C5AD /* Pods-MonitorBeacon.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MonitorBeacon.debug.xcconfig"; path = "Pods/Target Support Files/Pods-MonitorBeacon/Pods-MonitorBeacon.debug.xcconfig"; sourceTree = "<group>"; };
 		BB3BAA3EBAFECC40A6232817 /* Pods-MonitorBeacon.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MonitorBeacon.release.xcconfig"; path = "Pods/Target Support Files/Pods-MonitorBeacon/Pods-MonitorBeacon.release.xcconfig"; sourceTree = "<group>"; };
 		C01C95261D3B8D7000895A48 /* MonitorBeacon.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MonitorBeacon.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -263,6 +266,8 @@
 			children = (
 				C01C95961D3BB19800895A48 /* MBHomeTextFieldModel.h */,
 				C01C95971D3BB19800895A48 /* MBHomeTextFieldModel.m */,
+				65C2E11D1D3DB7B400DCD86C /* MBHomeHistoryModel.h */,
+				65C2E11E1D3DB7B400DCD86C /* MBHomeHistoryModel.m */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -512,6 +517,7 @@
 				C01C95621D3B8F3700895A48 /* ViewController.m in Sources */,
 				C01C952E1D3B8D7000895A48 /* AppDelegate.m in Sources */,
 				C01C95651D3B8F5200895A48 /* MBHomeView.m in Sources */,
+				65C2E11F1D3DB7B400DCD86C /* MBHomeHistoryModel.m in Sources */,
 				C01C95831D3B954200895A48 /* XMNotificationManager.m in Sources */,
 				C01C95951D3BA95200895A48 /* MBHomeBeaconTextFieldCellTableViewCell.m in Sources */,
 				C01C95821D3B954200895A48 /* XMBeaconManager.m in Sources */,

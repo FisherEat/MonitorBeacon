@@ -23,6 +23,13 @@ typedef NS_ENUM(NSInteger, MBHomeCellType)
     MBHomeCellTypeResult,
 };
 
+typedef NS_ENUM(NSInteger, MBHomeSectionType)
+{
+    MBHomeSectionTypeInput,
+    MBHomeSectionTypeResult,
+    MBHomeSectionTypeHistory
+};
+
 @interface MBHomeBeaconCellModel : NSObject
 @property (nonatomic, assign) MBHomeCellType cellType;
 @property (nonatomic, strong) id model;
@@ -43,9 +50,7 @@ typedef NS_ENUM(NSInteger, MBHomeCellType)
                            valueString:(NSString *)valueString;
 @end
 
-
-@interface MBHomeBeaconModel : NSObject
-
+@interface MBHomeBeaconModel : NSObject<NSCoding>
 @property (nonatomic, strong) NSString *uuid;
 @property (nonatomic, strong) NSString *minor;
 @property (nonatomic, strong) NSString *major;
@@ -55,4 +60,9 @@ typedef NS_ENUM(NSInteger, MBHomeCellType)
 @property (nonatomic, strong) NSString *message;
 @property (nonatomic, assign) NSInteger status;
 @property (nonatomic, strong) id data;
+@end
+
+@interface MBHomeBeaconSectionData : NSObject
+@property (nonatomic, assign) MBHomeSectionType sectionType;
+@property (nonatomic, strong) NSArray *sectionData;
 @end
